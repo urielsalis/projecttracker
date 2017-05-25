@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WebTextTerminal Demo</title>
+    <link rel="stylesheet" href="textterm/textterm.css">
+    <link rel="stylesheet" href="crabbits.css">
+</head>
+<body>
+<h1>Crabbits</h1>
+
+<div id="textterm" class="textterm-pane">
+    <span class="textterm-pair">
+        <span class="textterm-prompt"></span>
+        <span contenteditable="true" class="textterm-input"></span>
+    </span>
+</div>
+<h3 id="app-done"> </h3>
+
+<script src="textterm/textterm.js"></script>
+<script>
+    var textTerm = createTextTerm(document.getElementById("textterm"));
+    textTerm.onDispose = function(resultData) {
+        var message = "You can now close this window.";
+        if(resultData) {
+            message = resultData + " " + message;
+        }
+        document.getElementById("app-done").textContent = message;
+    }
+    textTerm.onAbort = function() {
+        document.getElementById("app-done").textContent = "Program aborted by the user. You can now close this window.";
+    }
+    textTerm.settings.paneBackgroundColor = "#000022";
+    textTerm.execute("Thanks for using Crabbits!\n");
+</script>
+
+</body>
+</html>
