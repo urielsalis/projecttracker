@@ -22,7 +22,9 @@ import java.util.function.Supplier;
  */
 public class Main {
     private static Main main;
-    public static List<Proyecto> proyectos = new ArrayList<Proyecto>();
+    public static List<Proyecto> proyectos = new ArrayList<>();
+    public static List<SubProyecto> subproyectos = new ArrayList<>();
+    public static List<Pago> pagos = new ArrayList<>();
 
     public static void main(String[] args) {
         main = new Main();

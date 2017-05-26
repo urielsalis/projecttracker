@@ -6,6 +6,8 @@ import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
 
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -38,49 +40,80 @@ public class CrabbitsApp implements BiConsumer<TextIO, String> {
         Menu1 menu1 = textIO.newEnumInputReader(Menu1.class)
                 .read("Opcion:");
         switch (menu1) {
-            case NuevoPago:
-                Main.pagos.add(new Pago(textIO));
+            case NuevoPago:{
+                Proyecto proyecto = getProyecto(textIO);
+                SubProyecto subProyecto = getSubProyecto(proyecto, textIO);
+                Main.pagos.add(new Pago(textIO, subProyecto));}
                 break;
-            case BorrarProyecto:
-                //TODO
+            case NuevoProyecto:{
+                Main.proyectos.add(new Proyecto(textIO));}
                 break;
-            case NuevoProyecto:
-                Main.proyectos.add(new Proyecto(textIO));
+            case NuevoSubProyecto:{
+                Proyecto proyecto = getProyecto(textIO);
+                Main.subproyectos.add(new SubProyecto(textIO, proyecto));}
                 break;
-            case NuevoSubProyecto:
-                Proyecto proyecto = getProyecto();
-                Main.subproyectos.add(new SubProyecto(textIO));
+            case GenerarPresupuesto:{
+                generarPresupuesto(textIO);}
                 break;
-            case BorrarSubproyecto:
-                //TODO
-                break;
-            case GenerarPresupuesto:
-                generarPresupuesto(textIO);
-                break;
-            case GenerarReciboComision:
-                generarRecibo(textIO);
+            case GenerarReciboComision:{
+                generarRecibo(textIO);}
                 break;
         }
 
-        int age = textIO.newIntInputReader()
-                .withMinVal(13)
-                .read("Age");
-
-        Month month = textIO.newEnumInputReader(Month.class)
-                .read("What month were you born in?");
-
-        terminal.printf("\nUser %s is %d years old, was born in %s and has the password %s.\n", user, age, month, password);
-
         textIO.newStringInputReader().withMinLength(0).read("\nPress enter to terminate...");
-        textIO.dispose("User '" + user + "' has left the building.");
+        textIO.dispose("Sesion finalizada");
 
     }
 
+    private SubProyecto getSubProyecto(Proyecto proyecto, TextIO textIO) {
+        List<String> strings = new ArrayList<>();
+        for(SubProyecto subProyecto: Main.subproyectos) {
+            if (subProyecto.proyecto.equals(proyecto)) {
+                strings.add(subProyecto.nombre + "(" + subProyecto.id + ")");
+            }
+        }
+        String selected = textIO.newStringInputReader()
+                .withNumberedPossibleValues(strings)
+                .read("Proyecto: ");
+        for(SubProyecto subProyecto: Main.subproyectos) {
+            if(selected.equals(subProyecto.nombre + "("+subProyecto.id +")")) {
+                return subProyecto;
+            }
+        }
+        return null;
+    }
+
+    private Proyecto getProyecto(TextIO textIO) {
+        List<String> strings = new ArrayList<>();
+        for(Proyecto proyecto: Main.proyectos) {
+            strings.add(proyecto.proyecto + "("+proyecto.proyectoID+")");
+        }
+        String selected = textIO.newStringInputReader()
+                .withNumberedPossibleValues(strings)
+                .read("Proyecto: ");
+        for(Proyecto proyecto: Main.proyectos) {
+            if(selected.equals(proyecto.proyecto + "("+proyecto.proyectoID+")")) {
+                return proyecto;
+            }
+        }
+        return null;
+    }
+
     private void generarPresupuesto(TextIO textIO) {
-        Proyecto proyecto = getProyecto();
-        List<SubProyectos> getSubProyectos(proyecto);
-        List<Pagos> getPagos(proyecto);
+        Proyecto proyecto = getProyecto(textIO);
+        List<SubProyecto> subProyectos = getSubProyectos(proyecto);
+        List<Pagos> pagos = getPagos(subProyectos, textIO);
         //TODO
+    }
+
+    private List<SubProyecto> getSubProyectos(Proyecto proyecto) {
+        List<SubProyecto> subProyectos = new ArrayList<>();
+        for(SubProyecto subProyecto: Main.subproyectos) {
+            if(subProyecto.equals(proyecto)) {
+                subProyectos.add(subProyecto);
+            }
+        }
+        return subProyectos;
     }
 
     public static void main(String[] args) {
