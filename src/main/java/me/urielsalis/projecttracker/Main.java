@@ -11,6 +11,7 @@ import org.beryx.textio.web.SparkTextIoApp;
 import org.beryx.textio.web.TextIoApp;
 import org.beryx.textio.web.WebTextTerminal;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,15 +24,22 @@ import java.util.function.Supplier;
 public class Main {
     private static Main main;
     public static List<Proyecto> proyectos = new ArrayList<>();
-    public static List<SubProyecto> subproyectos = new ArrayList<>();
-    public static List<Pago> pagos = new ArrayList<>();
-
     public static void main(String[] args) {
         main = new Main();
     }
 
     public Main() {
         //load info
+        try {
+            File file = new File("crabbits.dat");
+            if(file.exists()) {
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+                proyectos = (List<Proyecto>) in.readObject();
+                in.close();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         TextTerminal sysTerminal = new SystemTextTerminal();
         TextIO sysTextIO = new TextIO(sysTerminal);
 

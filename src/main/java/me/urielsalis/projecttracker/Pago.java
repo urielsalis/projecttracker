@@ -2,10 +2,12 @@ package me.urielsalis.projecttracker;
 
 import org.beryx.textio.TextIO;
 
+import java.io.Serializable;
+
 /**
  * Created by urielsalis on 5/25/17.
  */
-public class Pago {
+public class Pago implements Serializable {
     String fecha;
     String descripcion;
     int precio;
